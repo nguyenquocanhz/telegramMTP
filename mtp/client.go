@@ -43,6 +43,8 @@ type Config struct {
 	SessionFile string
 	// Logger defaults to slog.Default().
 	Logger *slog.Logger
+	// Queue tunes the outgoing message queue; the zero value is fine.
+	Queue QueueConfig
 }
 
 // Client is a connected (or connectable) Telegram bot.
@@ -53,6 +55,7 @@ type Client struct {
 	api    *tg.Client
 	sender *message.Sender
 	peers  *peerCache
+	queue  *Queue
 	self   atomic.Pointer[tg.User]
 
 	mu        sync.RWMutex
@@ -90,6 +93,7 @@ func New(cfg Config) (*Client, error) {
 		cfg:      cfg,
 		log:      cfg.Logger,
 		peers:    newPeerCache(),
+		queue:    newQueue(cfg.Queue, cfg.Logger),
 		commands: make(map[string]*command),
 	}
 
@@ -143,6 +147,10 @@ func (c *Client) Run(ctx context.Context) error {
 		}
 		c.self.Store(self)
 		c.log.Info("connected", "username", self.Username, "id", self.ID)
+
+		// The queue worker lives exactly as long as the connection. Jobs
+		// pushed before Run are held in the buffer until now.
+		go c.queue.run(ctx)
 
 		c.mu.RLock()
 		hooks := append([]func(context.Context) error(nil), c.onStart...)
