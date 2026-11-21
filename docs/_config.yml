@@ -1,0 +1,44 @@
+title: telegramMTP
+description: Thư viện Go nói chuyện với Telegram qua MTProto, gọn như Telethon.
+lang: vi
+url: https://nguyenquocanhz.github.io
+baseurl: /telegramMTP
+
+# GitHub Pages builds this folder with Jekyll; the theme is fetched at build time.
+remote_theme: just-the-docs/just-the-docs@v0.10.0
+plugins:
+  - jekyll-remote-theme
+
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+back_to_top: true
+back_to_top_text: Lên đầu trang
+
+aux_links:
+  GitHub: https://github.com/nguyenquocanhz/telegramMTP
+aux_links_new_tab: true
+
+gh_edit_link: true
+gh_edit_link_text: Sửa trang này trên GitHub
+gh_edit_repository: https://github.com/nguyenquocanhz/telegramMTP
+gh_edit_branch: main
+gh_edit_source: docs
+gh_edit_view_mode: edit
+
+footer_content: telegramMTP · xây trên <a href="https://github.com/gotd/td">gotd/td</a>
+
+callouts:
+  note:
+    title: Lưu ý
+    color: blue
+  warning:
+    title: Cẩn thận
+    color: yellow
+
+# Renders ```mermaid code blocks as diagrams.
+mermaid:
+  version: "10.9.1"
+
+exclude:
+  - README.md
