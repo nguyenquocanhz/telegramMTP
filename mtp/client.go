@@ -55,11 +55,12 @@ type Client struct {
 	peers  *peerCache
 	self   atomic.Pointer[tg.User]
 
-	mu       sync.RWMutex
-	commands map[string]*command
-	order    []string // command names in registration order
-	onText   []Handler
-	onStart  []func(ctx context.Context) error
+	mu        sync.RWMutex
+	commands  map[string]*command
+	order     []string // command names in registration order
+	onText    []Handler
+	callbacks []callbackRoute
+	onStart   []func(ctx context.Context) error
 }
 
 // New validates cfg and prepares a client. Nothing touches the network
@@ -99,6 +100,10 @@ func New(cfg Config) (*Client, error) {
 	})
 	d.OnNewChannelMessage(func(ctx context.Context, e tg.Entities, u *tg.UpdateNewChannelMessage) error {
 		c.handleMessage(ctx, e, u.Message)
+		return nil
+	})
+	d.OnBotCallbackQuery(func(ctx context.Context, e tg.Entities, u *tg.UpdateBotCallbackQuery) error {
+		c.handleCallback(ctx, e, u)
 		return nil
 	})
 
