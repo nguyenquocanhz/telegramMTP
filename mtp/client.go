@@ -155,6 +155,11 @@ func (c *Client) Run(ctx context.Context) error {
 		// pushed before Run are held in the buffer until now.
 		go c.queue.run(ctx)
 
+		// A stale "/" menu is cosmetic, so it must not stop the bot.
+		if err := c.SyncCommands(ctx); err != nil {
+			c.log.Warn("command menu not updated", "err", err)
+		}
+
 		c.mu.RLock()
 		hooks := append([]func(context.Context) error(nil), c.onStart...)
 		c.mu.RUnlock()
