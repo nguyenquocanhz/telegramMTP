@@ -4,6 +4,8 @@ Thư viện Go nói chuyện với Telegram trực tiếp qua **MTProto** (khôn
 
 Kèm theo là **natterbot**: một bot chạy được ngay, mỗi lệnh minh hoạ một tính năng của thư viện.
 
+📖 **Tài liệu đầy đủ:** <https://nguyenquocanhz.github.io/telegramMTP/> (nguồn nằm trong [`docs/`](docs/))
+
 ```go
 bot, _ := mtp.New(mtp.Config{APIID: id, APIHash: hash, BotToken: token, AdminIDs: []int64{123456789}})
 

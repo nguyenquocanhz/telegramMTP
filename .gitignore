@@ -13,6 +13,10 @@ session.json
 # Node tooling (commitlint / husky)
 node_modules/
 
+# Local Jekyll build of docs/
+docs/_site/
+docs/.jekyll-cache/
+
 # Editors / OS
 .vscode/
 .idea/
