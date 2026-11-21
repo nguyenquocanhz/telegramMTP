@@ -1,0 +1,14 @@
+{
+  "name": "telegram-mtp-tooling",
+  "private": true,
+  "description": "Dev tooling only (commitlint + husky). The project itself is Go.",
+  "scripts": {
+    "prepare": "husky",
+    "lint:commits": "commitlint --from origin/main --to HEAD --verbose"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "husky": "^9.1.7"
+  }
+}

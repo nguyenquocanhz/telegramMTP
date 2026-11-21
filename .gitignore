@@ -1,0 +1,20 @@
+# Build output
+bin/
+*.exe
+
+# Secrets and runtime state (never commit)
+.env
+data/
+secrets/
+secrets.enc
+session.json
+*.session
+
+# Node tooling (commitlint / husky)
+node_modules/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
