@@ -1,0 +1,16 @@
+# Keep secrets and local state out of the build context and image.
+.env
+.env.*
+!.env.example
+data/
+secrets/
+secrets.enc
+session.json
+
+.git/
+.github/
+.husky/
+node_modules/
+bin/
+docs/
+*.md

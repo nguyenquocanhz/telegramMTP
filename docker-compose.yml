@@ -1,0 +1,58 @@
+# Deploy:
+#   1. copy .env.example to .env and fill in the four values
+#   2. docker compose up -d --build
+#   3. docker compose logs -f natterbot
+#
+# Compose reads .env automatically for the ${...} references below and
+# refuses to start while a required value is missing.
+
+services:
+  natterbot:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-docker}
+    image: natterbot:${VERSION:-latest}
+    container_name: natterbot
+    restart: unless-stopped
+    environment:
+      API_ID: "${API_ID:?set API_ID in .env (from https://my.telegram.org/apps)}"
+      API_HASH: "${API_HASH:?set API_HASH in .env (from https://my.telegram.org/apps)}"
+      BOT_TOKEN: "${BOT_TOKEN:?set BOT_TOKEN in .env (from @BotFather)}"
+      # Telegram user IDs allowed to run admin commands, comma separated.
+      # Send /id to the bot to find yours.
+      ADMIN_ID: "${ADMIN_ID:?set ADMIN_ID in .env (send /id to the bot to find it)}"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TZ: ${TZ:-Asia/Ho_Chi_Minh}
+    volumes:
+      # Holds session.json (the MTProto auth key). Keeping it means a
+      # restart does not log in again.
+      - natterbot-data:/data
+    # The bot only makes outbound connections; no ports are published.
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+    # --- Optional: Docker secrets instead of plain environment values ---
+    # The secret manager reads /run/secrets/<lowercase key> by itself.
+    # To use it: put the token in ./secrets/bot_token.txt, delete the
+    # BOT_TOKEN line above, and uncomment this block and the one below.
+    # secrets:
+    #   - bot_token
+
+volumes:
+  natterbot-data:
+
+# secrets:
+#   bot_token:
+#     file: ./secrets/bot_token.txt
