@@ -46,8 +46,10 @@ func newMessage(m *tg.Message) *Message {
 type Context struct {
 	context.Context
 	Client *Client
-	// Message is the incoming message.
+	// Message is the incoming message. It is nil in OnCallback handlers.
 	Message *Message
+	// Callback is the inline button tap. It is nil in message handlers.
+	Callback *Callback
 	// Command is the matched command name without the slash ("" for
 	// plain text) and Args is the rest of the line.
 	Command string
