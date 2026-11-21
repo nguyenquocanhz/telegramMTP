@@ -10,9 +10,10 @@ import (
 type Handler func(c *Context) error
 
 type command struct {
-	name string
-	desc string
-	h    Handler
+	name  string
+	desc  string
+	h     Handler
+	admin bool
 }
 
 // OnCommand registers a handler for /name. The description is what users
@@ -70,7 +71,9 @@ func (c *Client) route(x *Context) []Handler {
 		if bot != "" && !strings.EqualFold(bot, c.Username()) {
 			return nil
 		}
-		if cmd, found := c.commands[name]; found {
+		// An admin command sent by anyone else falls through and is
+		// treated as unknown, so its existence is not revealed.
+		if cmd, found := c.commands[name]; found && (!cmd.admin || c.IsAdmin(x.senderID)) {
 			x.Command, x.Args = name, args
 			return []Handler{cmd.h}
 		}

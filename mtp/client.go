@@ -41,6 +41,9 @@ type Config struct {
 	// SessionFile stores the MTProto auth key so restarts do not log in
 	// again. Treat it like a password. Defaults to "session.json".
 	SessionFile string
+	// AdminIDs are the Telegram user IDs allowed to run commands
+	// registered with OnAdminCommand.
+	AdminIDs []int64
 	// Logger defaults to slog.Default().
 	Logger *slog.Logger
 	// Queue tunes the outgoing message queue; the zero value is fine.
