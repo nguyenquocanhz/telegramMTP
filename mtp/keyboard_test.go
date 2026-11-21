@@ -48,3 +48,21 @@ func TestClientCommandKeyboardUsesRegistrationOrder(t *testing.T) {
 		t.Errorf("order = %q, %q", m.Rows[0].Buttons[0].Text, m.Rows[0].Buttons[1].Text)
 	}
 }
+
+func TestClientCommandKeyboardLeavesOutAdminCommands(t *testing.T) {
+	c := &Client{commands: make(map[string]*command)}
+	noop := func(*Context) error { return nil }
+	c.OnCommand("start", "", noop)
+	c.OnAdminCommand("stats", "", noop)
+	c.OnCommand("help", "", noop)
+
+	m := c.CommandKeyboard(3).markup().(*tg.ReplyKeyboardMarkup)
+	if len(m.Rows) != 1 || len(m.Rows[0].Buttons) != 2 {
+		t.Fatalf("unexpected layout: %+v", m.Rows)
+	}
+	for _, b := range m.Rows[0].Buttons {
+		if b.Text == "/stats" {
+			t.Errorf("admin command %q is on the public keyboard", b.Text)
+		}
+	}
+}
