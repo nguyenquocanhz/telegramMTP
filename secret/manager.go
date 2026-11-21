@@ -157,6 +157,9 @@ func (m *Manager) Source(key string) string {
 	return source
 }
 
+// StorePath is the encrypted store file this Manager uses.
+func (m *Manager) StorePath() string { return m.storePath }
+
 // Require returns the secret or an error naming every place that was
 // checked, so a missing credential is quick to fix.
 func (m *Manager) Require(key string) (string, error) {
@@ -165,6 +168,9 @@ func (m *Manager) Require(key string) (string, error) {
 	}
 	msg := fmt.Sprintf("secret %s is not set (checked env %s, env %s_FILE, %s, .env)",
 		key, key, key, filepath.ToSlash(filepath.Join(m.secretsDir, strings.ToLower(key))))
+	if m.store != nil {
+		msg += "; also not in " + m.storePath
+	}
 	if m.storeSkipped {
 		msg += fmt.Sprintf("; %s was skipped because %s is not set", m.storePath, MasterKeyName)
 	}
