@@ -45,10 +45,16 @@ func CommandKeyboard(perRow int, commands ...string) *Keyboard {
 }
 
 // CommandKeyboard builds a keyboard from every command registered with
-// OnCommand, in registration order.
+// OnCommand, in registration order. Commands registered with
+// OnAdminCommand are left out, so the keyboard is safe to show anyone.
 func (c *Client) CommandKeyboard(perRow int) *Keyboard {
 	c.mu.RLock()
-	names := append([]string(nil), c.order...)
+	names := make([]string, 0, len(c.order))
+	for _, name := range c.order {
+		if !c.commands[name].admin {
+			names = append(names, name)
+		}
+	}
 	c.mu.RUnlock()
 	return CommandKeyboard(perRow, names...)
 }
